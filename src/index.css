@@ -28,6 +28,18 @@ body {
   background-color: rgb(10, 126, 235);
 }
 
+@media screen and (max-width: 992px) {
+  .board {
+    width: 324px;
+    height: 324px;
+  }
+
+  .position {
+    width: 16px;
+    height: 16px;
+  }
+}
+
 .snake {
   background-color: rgb(214, 43, 66);
   border: 1px solid grey
@@ -37,6 +49,12 @@ body {
   text-align: center;
   line-height: 32px;
   font-size: 1.4rem;
+}
+
+@media screen and (max-width: 992px) {
+  .food {
+    line-height: 16px;
+  }
 }
 
 button.play {
@@ -70,4 +88,14 @@ button.play {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+@media screen and (max-width: 992px) {
+  .arrow-buttons {
+    width: 324px;
+  }
+
+  .arrow-buttons .middle-buttons {
+    width: 324px;
+  }
 }
