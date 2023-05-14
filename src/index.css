@@ -54,6 +54,8 @@ body {
 @media screen and (max-width: 992px) {
   .food {
     line-height: 16px;
+    font-size: 0.7rem;
+
   }
 }
 
