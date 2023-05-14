@@ -1,0 +1,38 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0px;
+  margin: 0px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.board {
+  width: 644px;
+  height: 644px;
+  display: flex;
+  flex-wrap: wrap;
+  border: 2px solid black;
+}
+
+.position {
+  width: 32px;
+  height: 32px;
+  background-color: rgb(43, 214, 214);
+}
+
+.snake {
+  background-color: rgb(214, 43, 66);
+  border: 1px solid grey
+}
+
+.food {
+  text-align: center;
+  line-height: 32px;
+  font-size: 1.4rem;
+}
