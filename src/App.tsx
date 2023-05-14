@@ -1,69 +1,91 @@
 import { useEffect, useState } from "react";
 import Board from "./board";
+import NoGame from "./no-game";
 
 export default function App() {
   const boardDimension = 20;
-  const [snake, setSnake] = useState([0, 1, 2]);
-  const [speed, setSpeed] = useState(300);
-  const [direction, setDirection] = useState(1);
-  const [food, setFood] = useState(generateFood());
+
+  const [snake, setSnake] = useState<Array<number>>([1, 2, 3]);
+  const [speed, setSpeed] = useState<number>(300);
+  const [directionDiff, setDirectionDiff] = useState<number>(1);
+  const [food, setFood] = useState<number>(generateFood());
+  const [score, setScore] = useState<number>(0);
+  const [isGame, setIsGame] = useState<boolean>(false);
+  const [isPause, setIsPause] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log("game loop");
-    const t = setTimeout(gameStep, speed);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [snake]);
-
-  useEffect(() => {
+    console.log("first");
     document.addEventListener("keydown", (e) => {
       keyDownHandler(e);
     });
-  }, []);
+  }, []); // only 1 time when components load
+
+
+  useEffect(() => {
+    if (isGame && !isPause) {
+      const t = setTimeout(gameStep, speed);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [snake]); // when snake changes run effect
+
 
   function gameStep(): void {
-    const nextPos = snake[snake.length - 1] + direction;
+    const nextPos = snake[snake.length - 1] + directionDiff;
     const newSnake = [...snake];
 
     if (isGameOver(nextPos)) {
+      setIsGame(false);
       alert("Game over");
       return;
     }
 
     if (isFood(nextPos)) {
       speedUp();
+      scoreUp();
       setFood(generateFood());
     } else {
       newSnake.shift(); // remove tail piece if not eaten
     }
+
     newSnake.push(nextPos); // move head of the snake 
     setSnake(newSnake);
   }
 
-  function keyDownHandler(event: KeyboardEvent) {
+  function keyDownHandler(event: KeyboardEvent): void {
+    console.log(event.code);
     if (event.code === "ArrowUp") {
-      setDirection(-boardDimension);
+      setDirectionDiff(-boardDimension);
     }
     if (event.code === "ArrowDown") {
-      setDirection(boardDimension);
+      setDirectionDiff(boardDimension);
     }
     if (event.code === "ArrowLeft") {
-      setDirection(-1);
+      setDirectionDiff(-1);
     }
     if (event.code === "ArrowRight") {
-      setDirection(1);
+      setDirectionDiff(1);
+    }
+    if (event.code === "Space") {
+      if (isPause) {
+
+        setIsPause(false);
+
+      } else {
+        setIsPause(true);
+      }
     }
   }
 
-  function generateFood() {
+  function generateFood(): number {
     return Math.floor(Math.random() * (boardDimension ** 2));
   }
 
-  function isFood(nextPos: number) {
+  function isFood(nextPos: number): boolean {
     return food === nextPos;
   }
 
-  function isGameOver(nextPos: number) {
+  function isGameOver(nextPos: number): boolean {
     return snake.includes(nextPos)
       || nextPos < 0
       || nextPos >= boardDimension ** 2
@@ -71,17 +93,36 @@ export default function App() {
       || (nextPos + 1) % boardDimension === 0 && (snake[snake.length - 1]) % boardDimension === 0;
   }
 
-  function speedUp() {
+  function speedUp(): void {
     setSpeed(speed - 20);
+  }
+
+  function scoreUp(): void {
+    setScore(score + 10);
+  }
+
+  function onPlayGame(): void {
+    setIsGame(true);
+    setIsPause(false);
+    setSnake([0, 1, 2]);
+    setDirectionDiff(1);
+    setFood(generateFood());
+    setSpeed(300);
+    setScore(0);
   }
 
   return (
     <>
       <div className="container">
-        <Board
-          snake={snake}
-          food={food}
-          boardDimension={boardDimension}></Board>
+        {!isGame && <NoGame onPlayGame={onPlayGame} />}
+        {isGame && (<>
+          <h2>Score: {score}</h2>
+          <Board
+            snake={snake}
+            foodIndex={food}
+            boardDimension={boardDimension}></Board>
+        </>)
+        }
       </div>
     </>
   );
