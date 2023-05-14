@@ -47,3 +47,27 @@ button.play {
   width: 100px;
   background-color: rgb(10, 126, 235);
 }
+
+.arrow-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 644px;
+}
+
+.arrow-buttons button {
+  color: white;
+  border: none;
+  margin: 5px;
+  padding: 20px;
+  width: 100px;
+  background-color: rgb(10, 126, 235);
+}
+
+.arrow-buttons .middle-buttons {
+  width: 644px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

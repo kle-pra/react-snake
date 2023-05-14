@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Board from "./board";
+import ControlButtons from "./control-buttons";
 import NoGame from "./no-game";
 
 export default function App() {
@@ -11,10 +12,8 @@ export default function App() {
   const [food, setFood] = useState<number>(generateFood());
   const [score, setScore] = useState<number>(0);
   const [isGame, setIsGame] = useState<boolean>(false);
-  const [isPause, setIsPause] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log("first");
     document.addEventListener("keydown", (e) => {
       keyDownHandler(e);
     });
@@ -22,7 +21,8 @@ export default function App() {
 
 
   useEffect(() => {
-    if (isGame && !isPause) {
+    console.log("game loo");
+    if (isGame) {
       const t = setTimeout(gameStep, speed);
       return () => clearTimeout(t);
     }
@@ -53,7 +53,6 @@ export default function App() {
   }
 
   function keyDownHandler(event: KeyboardEvent): void {
-    console.log(event.code);
     if (event.code === "ArrowUp") {
       setDirectionDiff(-boardDimension);
     }
@@ -65,15 +64,6 @@ export default function App() {
     }
     if (event.code === "ArrowRight") {
       setDirectionDiff(1);
-    }
-    if (event.code === "Space") {
-      if (isPause) {
-
-        setIsPause(false);
-
-      } else {
-        setIsPause(true);
-      }
     }
   }
 
@@ -103,12 +93,15 @@ export default function App() {
 
   function onPlayGame(): void {
     setIsGame(true);
-    setIsPause(false);
     setSnake([0, 1, 2]);
     setDirectionDiff(1);
     setFood(generateFood());
     setSpeed(300);
     setScore(0);
+  }
+
+  function onArrowButton(diff: number): void {
+    setDirectionDiff(diff);
   }
 
   return (
@@ -121,6 +114,11 @@ export default function App() {
             snake={snake}
             foodIndex={food}
             boardDimension={boardDimension}></Board>
+
+          <ControlButtons
+            onArrowButton={onArrowButton}
+            boardDimension={boardDimension}
+          ></ControlButtons>
         </>)
         }
       </div>
