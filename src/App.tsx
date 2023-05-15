@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Board from "./board";
 import ControlButtons from "./control-buttons";
 import NoGame from "./no-game";
@@ -12,6 +12,7 @@ export default function App() {
   const [food, setFood] = useState<number>(generateFood());
   const [score, setScore] = useState<number>(0);
   const [isGame, setIsGame] = useState<boolean>(false);
+  const [pause, setPause] = useState(false);
 
   useEffect(() => {
     document.addEventListener("keydown", (e) => {
@@ -21,14 +22,30 @@ export default function App() {
 
 
   useEffect(() => {
-    console.log("game loo");
+    if (pause) {
+      return;
+    }
+
     if (isGame) {
       const t = setTimeout(gameStep, speed);
       return () => clearTimeout(t);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [snake]); // when snake changes run effect
+  }, [snake, pause]); // when snake changes run effect
 
+  const onPauseKeyDown = useCallback((e: KeyboardEvent) => {
+    const { code } = e;
+    if (code === "Space") {
+      setPause(!pause);
+    }
+  }, [pause]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", onPauseKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onPauseKeyDown);
+    };
+  }, [onPauseKeyDown]);  // must be reatached every pause
 
   function gameStep(): void {
     const nextPos = snake[snake.length - 1] + directionDiff;
@@ -119,6 +136,7 @@ export default function App() {
             onArrowButton={onArrowButton}
             boardDimension={boardDimension}
           ></ControlButtons>
+          <button className="pause-button" onClick={_e => setPause(!pause)}>PAUSE (space)</button>
         </>)
         }
       </div>

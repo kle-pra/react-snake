@@ -101,3 +101,12 @@ button.play {
     width: 324px;
   }
 }
+
+.pause-button {
+  color: white;
+  border: none;
+  margin: 55px;
+  padding: 20px;
+  width: 200px;
+  background-color: rgb(10, 126, 235);
+}
